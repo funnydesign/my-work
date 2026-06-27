@@ -390,7 +390,7 @@
     /* ── 세트 배너 오버레이 ── */
     .set-banner {
       position: fixed; inset: 0;
-      background: rgba(5,18,32,0.86);
+      background: rgba(0,0,0,0.70);
       backdrop-filter: blur(6px);
       display: flex; align-items: center; justify-content: center;
       z-index: 200;
@@ -404,13 +404,13 @@
       60%  { transform: scale(1.05); opacity: 1; }
       100% { transform: scale(1); opacity: 1; }
     }
-    .set-banner-label  { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.25em; color: var(--mid); margin-bottom: 0.6rem; }
-    .set-banner-result { font-size: 3.2rem; font-weight: 900; line-height: 1.1; }
+    .set-banner-label  { font-size: 1.7rem; font-weight: 700; letter-spacing: 0.25em; color: var(--mid); margin-bottom: 0.6rem; }
+    .set-banner-result { font-size: 6.4rem; font-weight: 900; line-height: 1.1; }
     .set-banner-result.win  { color: var(--yellow); }
     .set-banner-result.lose { color: #FF5555; }
     .set-banner-result.draw { color: var(--mid); }
-    .set-banner-score  { margin-top: 0.8rem; font-size: 1rem; color: rgba(255,255,255,0.5); }
-    .set-banner-next   { margin-top: 1.2rem; font-size: 0.78rem; color: rgba(255,255,255,0.3); animation: blink 1s ease infinite; }
+    .set-banner-score  { margin-top: 0.8rem; font-size: 2rem; color: rgba(255,255,255,0.5); }
+    .set-banner-next   { margin-top: 1.2rem; font-size: 1.56rem; color: rgba(255,255,255,0.3); animation: blink 1s ease infinite; }
     @keyframes blink { 0%,100% { opacity: 0.3; } 50% { opacity: 0.9; } }
 
     /* ── 카운트다운 오버레이 ── */
@@ -803,27 +803,70 @@
     }, 2800);
   }
 
+  /* ── 음성 카운트다운 ── */
+  let _voices = [];
+  function loadVoices() { _voices = window.speechSynthesis.getVoices(); }
+  if (window.speechSynthesis) {
+    loadVoices();
+    window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
+  }
+
+  function speak(text) {
+    if (!window.speechSynthesis) return;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang   = 'en-US';
+    u.rate   = 1.0;
+    u.pitch  = 0.6;
+    u.volume = 1.0;
+    // 영어 남성 목소리 우선
+    const enVoices = _voices.filter(v => v.lang.startsWith('en'));
+    const male = enVoices.find(v => /male|man|david|mark|guy|james|george/i.test(v.name))
+              || enVoices[0];
+    if (male) u.voice = male;
+    window.speechSynthesis.speak(u);
+  }
+
   /* ── 카운트다운 ── */
   function startCountdown() {
-    const steps = ['3','2','1','시작!'];
-    let i = 0;
+    const steps  = ['3', '2', '1', '시작!'];
+    const spoken = ['Three', 'Two', 'One', 'Go!'];
+    window.speechSynthesis.cancel();
     cdOverlay.classList.add('show');
-    function next() {
-      if (i >= steps.length) {
+
+    function showStep(idx) {
+      if (idx >= steps.length) {
         cdOverlay.classList.remove('show');
         locked = false;
         btns.forEach(b => b.classList.remove('locked-ui'));
         return;
       }
+
+      // 1. 숫자 즉시 표시 (시각)
       cdNum.className = 'countdown-num';
       void cdNum.offsetWidth;
-      cdNum.textContent = steps[i];
-      if (i < 3) sfx.beep(); else sfx.go();
-      cdNum.classList.add(i < 3 ? 'pop' : 'go');
-      i++;
-      setTimeout(next, 900);
+      cdNum.textContent = steps[idx];
+      cdNum.classList.add(idx < 3 ? 'pop' : 'go');
+
+      // 2. Web Audio 톤으로 볼륨 보강 (TTS와 동시 재생)
+      const freq = [660, 590, 523, 880][idx];
+      tone(freq, 0, 0.18, 0.45, 'sine');
+      tone(freq * 2, 0, 0.12, 0.12, 'sine');
+
+      // 3. TTS 음성 (자연 지연 ~50ms 후 시작 → 숫자 직후 들림)
+      const u = new SpeechSynthesisUtterance(spoken[idx]);
+      u.lang   = 'en-US';
+      u.rate   = 0.95;
+      u.pitch  = 0.65;
+      u.volume = 1.0;
+      const enVoices = _voices.filter(v => v.lang.startsWith('en'));
+      const male = enVoices.find(v => /male|man|david|mark|guy|james|george/i.test(v.name))
+                || enVoices[0];
+      if (male) u.voice = male;
+      u.onend = () => setTimeout(() => showStep(idx + 1), 150);
+      window.speechSynthesis.speak(u);
     }
-    next();
+
+    showStep(0);
   }
 
   /* ── 선택 ── */
