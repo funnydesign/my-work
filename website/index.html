@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D그라운드</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- GNB -->
+  <header class="gnb" id="gnb">
+    <div class="gnb-inner">
+      <a href="#" class="gnb-logo">D그라운드</a>
+      <nav class="gnb-nav">
+        <a href="#hero"     class="gnb-nav__item" data-section="hero">D그라운드</a>
+        <a href="#stories"  class="gnb-nav__item" data-section="stories">기술과 안전</a>
+        <a href="#services" class="gnb-nav__item" data-section="services">서비스</a>
+        <a href="#"         class="gnb-nav__item">동행과 상생</a>
+        <a href="#newsroom" class="gnb-nav__item" data-section="newsroom">뉴스룸</a>
+        <a href="#"         class="gnb-nav__item">안내</a>
+      </nav>
+      <a href="#recruit" class="gnb-recruit">인재 영입 ↗</a>
+      <button class="gnb-hamburger" id="hamburger" aria-label="메뉴 열기">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 모바일 메뉴 -->
+  <div class="gnb-mobile-menu" id="mobileMenu">
+    <nav class="mobile-nav">
+      <a href="#hero"     class="mobile-nav__item">D그라운드</a>
+      <a href="#stories"  class="mobile-nav__item">기술과 안전</a>
+      <a href="#services" class="mobile-nav__item">서비스</a>
+      <a href="#"         class="mobile-nav__item">동행과 상생</a>
+      <a href="#newsroom" class="mobile-nav__item">뉴스룸</a>
+      <a href="#"         class="mobile-nav__item">안내</a>
+      <a href="#recruit"  class="mobile-nav__item mobile-nav__recruit">인재 영입 ↗</a>
+    </nav>
+  </div>
+
+  <main>
+
+    <!-- 히어로 -->
+    <section class="hero" id="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <p class="hero-eyebrow">we move life</p>
+        <h1 class="hero-title">우리의 기술로<br>생활을 움직입니다</h1>
+        <div class="odometer">
+          <p class="odometer-label">누적 이동거리</p>
+          <div class="odometer-value">
+            <span id="counter">0</span>
+            <span class="odometer-unit">km</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-scroll">
+        <span class="scroll-line"></span>
+        <span class="scroll-text">SCROLL</span>
+      </div>
+    </section>
+
+    <!-- 3가지 이야기 -->
+    <section class="stories" id="stories">
+
+      <!-- 1번: 텍스트 좌 / 이미지 우 -->
+      <article class="story-row fade-up">
+        <div class="story-row__text">
+          <h2 class="story-row__title">D그라운드 이야기</h2>
+          <p class="story-row__desc">D그라운드는 '스마트모빌리티'를 통해<br>더 여유 있고 가치 있는 일상을 만들어가겠습니다.</p>
+          <a href="#" class="story-link">자세히 보기 <span class="arrow">——→</span></a>
+        </div>
+        <div class="story-row__img">
+          <img src="image/카카오모빌리티_2_1.jpg" alt="D그라운드 이야기">
+        </div>
+      </article>
+
+      <!-- 2번: 이미지 좌 / 텍스트 우 -->
+      <article class="story-row story-row--reverse fade-up">
+        <div class="story-row__text">
+          <h2 class="story-row__title">이동 기술 이야기</h2>
+          <p class="story-row__desc">빅데이터와 인공지능 기술로<br>최적의 이동 경험을 설계합니다.</p>
+          <a href="#" class="story-link">자세히 보기 <span class="arrow">——→</span></a>
+        </div>
+        <div class="story-row__img">
+          <div class="story-img-box story-img-box--2">
+            <svg class="data-viz" viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+              <line class="dv-line" x1="55" y1="75" x2="155" y2="45"/>
+              <line class="dv-line" x1="155" y1="45" x2="255" y2="95"/>
+              <line class="dv-line" x1="255" y1="95" x2="345" y2="55"/>
+              <line class="dv-line" x1="55" y1="75" x2="115" y2="158"/>
+              <line class="dv-line" x1="155" y1="45" x2="205" y2="150"/>
+              <line class="dv-line" x1="255" y1="95" x2="205" y2="150"/>
+              <line class="dv-line" x1="205" y1="150" x2="308" y2="172"/>
+              <line class="dv-line" x1="115" y1="158" x2="205" y2="150"/>
+              <line class="dv-line" x1="345" y1="55" x2="308" y2="172"/>
+              <circle class="dv-node" cx="55"  cy="75"  r="4.5" style="animation-delay:0s"/>
+              <circle class="dv-node" cx="155" cy="45"  r="7"   style="animation-delay:0.35s"/>
+              <circle class="dv-node" cx="255" cy="95"  r="6"   style="animation-delay:0.7s"/>
+              <circle class="dv-node" cx="345" cy="55"  r="4"   style="animation-delay:1.05s"/>
+              <circle class="dv-node" cx="115" cy="158" r="4"   style="animation-delay:1.4s"/>
+              <circle class="dv-node" cx="205" cy="150" r="9"   style="animation-delay:0.2s"/>
+              <circle class="dv-node" cx="308" cy="172" r="5"   style="animation-delay:0.85s"/>
+            </svg>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3번: 텍스트 좌 / 이미지 우 -->
+      <article class="story-row fade-up">
+        <div class="story-row__text">
+          <h2 class="story-row__title">안전 노력 이야기</h2>
+          <p class="story-row__desc">드라이버와 승객 모두의 안전을<br>최우선으로 생각합니다.</p>
+          <a href="#" class="story-link">자세히 보기 <span class="arrow">——→</span></a>
+        </div>
+        <div class="story-row__img">
+          <div class="story-img-box story-img-box--3">
+            <!-- 자동차 -->
+            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 17H5v-5l3-6h8l3 6v5z"/>
+              <circle cx="7.5" cy="17" r="1.5"/>
+              <circle cx="16.5" cy="17" r="1.5"/>
+              <path d="M5 12h14"/>
+            </svg>
+            <!-- 방패 체크 (안전) -->
+            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L4 5v6c0 5.25 3.5 9.74 8 11 4.5-1.26 8-5.75 8-11V5z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+            <!-- 사람들 (상생) -->
+            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- 서비스 -->
+    <section class="services" id="services">
+      <div class="services-inner">
+        <p class="section-eyebrow fade-up">SERVICE</p>
+        <h2 class="section-title fade-up">모든 이동을 위한<br>모빌리티 서비스</h2>
+        <div class="service-grid">
+
+          <div class="service-item fade-up">
+            <div class="service-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 17H5v-5l3-6h8l3 6v5z"/>
+                <circle cx="7.5" cy="17" r="1.5"/>
+                <circle cx="16.5" cy="17" r="1.5"/>
+                <path d="M5 12h14"/>
+                <path d="M9 6h6"/>
+              </svg>
+            </div>
+            <span>택시</span>
+          </div>
+
+          <div class="service-item fade-up">
+            <div class="service-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <circle cx="12" cy="12" r="3"/>
+                <line x1="12" y1="2" x2="12" y2="9"/>
+                <line x1="4.22" y1="19.78" x2="9" y2="15"/>
+                <line x1="19.78" y1="19.78" x2="15" y2="15"/>
+              </svg>
+            </div>
+            <span>대리</span>
+          </div>
+
+          <div class="service-item fade-up">
+            <div class="service-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="5.5" cy="17.5" r="2.5"/>
+                <circle cx="18.5" cy="17.5" r="2.5"/>
+                <path d="M15 17.5H8.5V13L6 8h5l3.5 5h4"/>
+                <path d="M8.5 8l3-3h4"/>
+              </svg>
+            </div>
+            <span>바이크</span>
+          </div>
+
+          <div class="service-item fade-up">
+            <div class="service-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M9 17V7h5a3 3 0 0 1 0 6H9"/>
+              </svg>
+            </div>
+            <span>주차</span>
+          </div>
+
+          <div class="service-item fade-up">
+            <div class="service-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+              </svg>
+            </div>
+            <span>내비</span>
+          </div>
+
+          <div class="service-item fade-up">
+            <div class="service-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="6" width="20" height="13" rx="2"/>
+                <line x1="2" y1="11" x2="22" y2="11"/>
+                <path d="M7 6V4M17 6V4"/>
+                <circle cx="7" cy="16" r="1"/>
+                <circle cx="17" cy="16" r="1"/>
+              </svg>
+            </div>
+            <span>시외버스</span>
+          </div>
+
+          <div class="service-item fade-up">
+            <div class="service-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="3" width="16" height="13" rx="2"/>
+                <line x1="4" y1="10" x2="20" y2="10"/>
+                <circle cx="8.5" cy="14.5" r="1.5"/>
+                <circle cx="15.5" cy="14.5" r="1.5"/>
+                <path d="M7 20l2-4M17 20l-2-4"/>
+                <line x1="7" y1="20" x2="17" y2="20"/>
+              </svg>
+            </div>
+            <span>기차</span>
+          </div>
+
+          <div class="service-item fade-up">
+            <div class="service-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/>
+              </svg>
+            </div>
+            <span>항공</span>
+          </div>
+
+          <div class="service-item fade-up">
+            <div class="service-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="21 8 21 21 3 21 3 8"/>
+                <rect x="1" y="3" width="22" height="5"/>
+                <line x1="10" y1="12" x2="14" y2="12"/>
+              </svg>
+            </div>
+            <span>퀵/택배</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 뉴스룸 -->
+    <section class="newsroom" id="newsroom">
+      <div class="newsroom-inner">
+        <div class="newsroom-header">
+          <div>
+            <p class="section-eyebrow fade-up">NEWSROOM</p>
+            <h2 class="section-title fade-up">최신 소식</h2>
+          </div>
+          <a href="#" class="more-link">더보기 →</a>
+        </div>
+        <div class="news-grid">
+          <article class="news-card fade-up">
+            <div class="news-thumb news-thumb--1">
+              <div class="news-thumb-overlay">
+                <span class="news-thumb-bg-text">NEWS</span>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+              </div>
+            </div>
+            <div class="news-body">
+              <span class="news-tag">뉴스</span>
+              <h3 class="news-title">D그라운드, 스마트 모빌리티 혁신 기술 발표</h3>
+              <p class="news-date">2026.06.26</p>
+            </div>
+          </article>
+          <article class="news-card fade-up">
+            <div class="news-thumb news-thumb--2">
+              <div class="news-thumb-overlay">
+                <span class="news-thumb-bg-text">REPORT</span>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"/>
+                  <line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6" y1="20" x2="6" y2="14"/>
+                  <line x1="3" y1="20" x2="21" y2="20"/>
+                </svg>
+              </div>
+            </div>
+            <div class="news-body">
+              <span class="news-tag">리포트</span>
+              <h3 class="news-title">2026 모빌리티 트렌드 리포트 공개</h3>
+              <p class="news-date">2026.06.20</p>
+            </div>
+          </article>
+          <article class="news-card fade-up">
+            <div class="news-thumb news-thumb--3">
+              <div class="news-thumb-overlay">
+                <span class="news-thumb-bg-text">STORY</span>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+            </div>
+            <div class="news-body">
+              <span class="news-tag">더 많은 이야기</span>
+              <h3 class="news-title">파트너와 함께 만드는 지속 가능한 이동 생태계</h3>
+              <p class="news-date">2026.06.15</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 채용 -->
+    <section class="recruit" id="recruit">
+      <div class="recruit-inner fade-up">
+        <p class="section-eyebrow" style="color:#FFCD00">RECRUIT</p>
+        <h2 class="recruit-title">드라이버와 승객 모두가<br>행복한 이동을 만들어갈<br>당신을 기다립니다</h2>
+        <a href="#" class="btn-recruit">채용 알아보기</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-menus">
+        <div class="footer-col">
+          <p class="footer-col-title">D그라운드</p>
+          <a href="#">D그라운드 이야기</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">기술과 안전</p>
+          <a href="#">이동 기술 이야기</a>
+          <a href="#">안전 노력 이야기</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">서비스</p>
+          <a href="#">D그라운드 앱</a>
+          <a href="#">비즈니스</a>
+          <a href="#">자율주행</a>
+          <a href="#">로보틱스</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">동행과 상생</p>
+          <a href="#">파트너 상생</a>
+          <a href="#">지역사회 상생</a>
+          <a href="#">친환경</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">뉴스룸</p>
+          <a href="#">전체</a>
+          <a href="#">뉴스</a>
+          <a href="#">리포트</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">안내</p>
+          <a href="#">공지사항</a>
+          <a href="#">고객 지원</a>
+          <a href="#">광고 안내</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">Follow us</p>
+          <a href="#">Brunch</a>
+          <a href="#">Facebook</a>
+          <a href="#">YouTube</a>
+          <a href="#">Instagram</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">법률정보</p>
+          <a href="#">개인정보처리방침</a>
+          <a href="#">이용약관</a>
+          <a href="#">위치정보 이용약관</a>
+          <a href="#">윤리경영</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-logo">D그라운드</p>
+      <p class="footer-addr">경기도 성남시 판교역로 152, 13층 | 대표이사 홍길동</p>
+      <p class="footer-copy">© 2026 D그라운드. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const gnb       = document.getElementById('gnb');
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    // GNB 스크롤 배경 전환
+    window.addEventListener('scroll', () => {
+      gnb.classList.toggle('scrolled', window.scrollY > 10);
+    });
+
+    // 햄버거 메뉴 토글
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+
+    // 모바일 메뉴 링크 클릭 시 닫기
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        mobileMenu.classList.remove('open');
+      });
+    });
+
+    // 누적 이동거리 카운터 — 히어로 섹션 진입 후 700ms 딜레이
+    const target = 98347261;
+    const el = document.getElementById('counter');
+    el.textContent = (target - 500000).toLocaleString('ko-KR');
+
+    setTimeout(() => {
+      let current = target - 500000;
+      const step = Math.ceil(500000 / 80);
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = current.toLocaleString('ko-KR');
+        if (current >= target) clearInterval(timer);
+      }, 20);
+    }, 700);
+
+    // 스크롤 진입 fade-up 애니메이션
+    document.querySelectorAll('.service-item.fade-up').forEach((el, i) => {
+      el.style.transitionDelay = `${i * 0.05}s`;
+    });
+    document.querySelectorAll('.news-card.fade-up').forEach((el, i) => {
+      el.style.transitionDelay = `${i * 0.1}s`;
+    });
+
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          fadeObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
+
+    // GNB 현재 섹션 하이라이트
+    const navItems = document.querySelectorAll('.gnb-nav__item[data-section]');
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navItems.forEach(item => {
+            item.classList.toggle('active', item.dataset.section === entry.target.id);
+          });
+        }
+      });
+    }, { threshold: 0.4 });
+
+    document.querySelectorAll('section[id]').forEach(s => sectionObserver.observe(s));
+  </script>
+</body>
+</html>

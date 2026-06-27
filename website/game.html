@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>가위바위보 — D그라운드</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --yellow:   #FFCD00;
+      --white:    #FFFFFF;
+      --mid:      #7BAFC4;
+      --bg-dark:  #071828;
+      --bg-mid:   #0D2540;
+      --img-blue: #29B2D4;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: url('../game/image/bg.png') center / cover no-repeat fixed;
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      user-select: none;
+    }
+
+    .game-title {
+      font-size: 1rem; font-weight: 700;
+      letter-spacing: 0.2em; color: var(--yellow);
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+    h1 {
+      font-size: 2.8rem; font-weight: 900; margin-bottom: 2rem;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    /* ── 점수판 (세트 승수) ── */
+    .scoreboard {
+      display: flex; align-items: center; gap: 2rem;
+      margin-bottom: 1.2rem;
+      background: rgba(0,0,0,0.35);
+      border-radius: 20px;
+      padding: 1rem 2rem;
+      backdrop-filter: blur(6px);
+    }
+    .score-box { text-align: center; min-width: 110px; }
+    .score-label {
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.15em; color: var(--mid);
+      margin-bottom: 0.3rem;
+    }
+    .score-sublabel {
+      font-size: 0.6rem; color: rgba(123,175,196,0.6);
+      margin-bottom: 0.3rem;
+    }
+    .score-number {
+      font-size: 3.5rem; font-weight: 900; line-height: 1;
+      transition: transform 0.15s ease, color 0.15s ease;
+    }
+    .score-number.bump { transform: scale(1.3); color: var(--yellow); }
+    .score-vs { font-size: 1.2rem; font-weight: 700; color: var(--mid); }
+
+    /* ── SET / 라운드 표시바 ── */
+    .set-bar {
+      display: flex; align-items: center; gap: 1rem;
+      font-size: 0.82rem; font-weight: 700;
+      color: var(--white);
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 30px;
+      padding: 0.45rem 1.4rem;
+      margin-bottom: 1.8rem;
+      backdrop-filter: blur(6px);
+    }
+    .set-bar .highlight { color: var(--yellow); }
+    .set-bar .divider   { color: rgba(255,255,255,0.15); }
+
+    /* ── 선택 버튼 ── */
+    .choices { display: flex; gap: 1.5rem; margin-bottom: 2rem; }
+    .choice-btn {
+      position: relative;
+      padding: 0;
+      border: 2px solid rgba(41,178,212,0.3);
+      border-radius: 16px;
+      background: transparent;
+      cursor: pointer;
+      overflow: hidden;          /* 버튼 테두리로 이미지 모서리 클리핑 */
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+      display: block;
+    }
+    .choice-btn:hover  { border-color: rgba(41,178,212,0.7); box-shadow: 0 4px 20px rgba(41,178,212,0.2); }
+    .choice-btn.selected { border-color: var(--yellow); box-shadow: 0 0 0 3px var(--yellow); }
+    .choice-btn.locked-ui { pointer-events: none; opacity: 0.35; }
+
+    .key-hint {
+      position: absolute; top: 7px; right: 10px;
+      font-size: 0.65rem; font-weight: 700; color: var(--white);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+      z-index: 1;
+    }
+    .sprite-wrap {
+      width: 120px; height: 178px;  /* 120 × 222/150 */
+      overflow: hidden;
+      background: transparent;      /* 흰 배경 제거 */
+    }
+    .sprite-img { width: 360px; height: auto; display: block; }  /* 120 × 3 */
+    .sprite-img--scissors { transform: translateX(0); }
+    .sprite-img--rock     { transform: translateX(-120px); }
+    .sprite-img--paper    { transform: translateX(-240px); }
+
+    /* ── Enter 힌트 ── */
+    .enter-hint { font-size: 0.8rem; color: var(--mid); margin-bottom: 2rem; }
+    .enter-hint kbd {
+      display: inline-block;
+      background: #1a3a55; color: var(--white);
+      border-radius: 5px; padding: 2px 8px;
+      font-size: 0.75rem; font-family: inherit;
+    }
+
+    /* ── 결과 영역 ── */
+    .result-area { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
+    .battle { display: flex; align-items: center; gap: 2.5rem; }
+    .player-col { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+    .player-label {
+      font-size: 0.75rem; font-weight: 700; color: var(--white); letter-spacing: 0.1em;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.7);
+    }
+
+    /* 라운드 결과 도트 */
+    .round-dots { display: flex; gap: 7px; }
+    .round-dot {
+      width: 11px; height: 11px; border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      border: 1.5px solid rgba(255,255,255,0.22);
+      transition: background 0.25s, border-color 0.25s, transform 0.2s;
+    }
+    .round-dot.win  { background: #6BCB77; border-color: #6BCB77; transform: scale(1.2); }
+    .round-dot.lose { background: #FF5555; border-color: #FF5555; }
+    .round-dot.draw { background: #888;    border-color: #888; }
+
+    /* 캐릭터 카드 */
+    .char-card {
+      position: relative;
+      width: 180px; height: 180px;
+      border-radius: 20px;
+      background: var(--img-blue);
+      border: 2px solid rgba(41,178,212,0.35);
+      overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .char-card.win-state  { border-color: var(--yellow); box-shadow: 0 0 24px rgba(255,205,0,0.55); }
+    .char-card.lose-state { border-color: #FF4444; }
+
+    .char-img { width: 100%; height: 100%; display: block; object-fit: cover; }
+    .char-img--human { object-position: center top; }
+    .char-img--ai    { object-position: center center; }
+
+    /* 선택 배지 (우하단) */
+    .pick-badge {
+      position: absolute; bottom: 8px; right: 8px;
+      width: 40px; height: 59px;
+      overflow: hidden; border-radius: 6px;
+      border: 1.5px solid rgba(0,0,0,0.15);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      opacity: 0; z-index: 4;
+      transition: opacity 0.3s;
+    }
+    .pick-badge.show { opacity: 1; }
+    .pick-badge-img { width: 120px; height: auto; display: block; }
+
+    /* 카드 오버레이 */
+    .card-overlay {
+      position: absolute; inset: 0;
+      pointer-events: none; z-index: 5;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 20px;
+    }
+    .card-overlay.win-overlay  { background: rgba(255,205,0,0.18); }
+    .card-overlay.lose-overlay { background: rgba(0,0,0,0.08); }
+    .card-overlay.draw-overlay { background: rgba(120,120,120,0.1); }
+
+    .trophy-anim {
+      font-size: 5rem;
+      filter: drop-shadow(0 0 14px rgba(255,205,0,0.9));
+      animation: trophy-bounce 0.65s cubic-bezier(0.175,0.885,0.32,1.275) both;
+    }
+    @keyframes trophy-bounce {
+      0%   { transform: scale(0) translateY(24px); opacity: 0; }
+      60%  { transform: scale(1.25) translateY(-8px); opacity: 1; }
+      80%  { transform: scale(0.92) translateY(4px); }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .exp-ring {
+      position: absolute; border-radius: 50%;
+      border: 3px solid; width: 24px; height: 24px;
+    }
+    .exp-ring1 { border-color: #FF4444; animation: ring-expand 0.75s ease-out 0s both; }
+    .exp-ring2 { border-color: #FF8844; animation: ring-expand 0.75s ease-out 0.12s both; }
+    .exp-ring3 { border-color: #FFCC44; animation: ring-expand 0.75s ease-out 0.24s both; }
+    @keyframes ring-expand {
+      0%   { transform: scale(1); opacity: 1; }
+      100% { transform: scale(8); opacity: 0; }
+    }
+    .exp-emoji {
+      font-size: 4.5rem; position: relative; z-index: 2;
+      animation: exp-pop 0.4s ease-out both;
+    }
+    @keyframes exp-pop {
+      0%   { transform: scale(0); opacity: 0; }
+      60%  { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .bang-text {
+      position: absolute; bottom: 14px;
+      font-size: 2rem; font-weight: 900; color: #FF1111; z-index: 3;
+      text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;
+      animation: bang-pop 0.55s cubic-bezier(0.175,0.885,0.32,1.275) 0.2s both;
+    }
+    @keyframes bang-pop {
+      0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
+      60%  { transform: scale(1.3) rotate(5deg); }
+      100% { transform: scale(1) rotate(-3deg); opacity: 1; }
+    }
+    .draw-emoji { font-size: 3.5rem; animation: draw-appear 0.4s ease-out both; }
+    @keyframes draw-appear {
+      0%   { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes card-shake {
+      0%,100% { transform: rotate(0); }
+      15%  { transform: translateX(-8px) rotate(-4deg); }
+      30%  { transform: translateX(8px) rotate(4deg); }
+      45%  { transform: translateX(-6px) rotate(-3deg); }
+      60%  { transform: translateX(6px) rotate(3deg); }
+      80%  { transform: translateX(-2px) rotate(-1deg); }
+    }
+    .shake-card { animation: card-shake 0.55s ease; }
+
+    /* 라운드 결과 메시지 */
+    .result-msg {
+      font-size: 1.4rem; font-weight: 900; letter-spacing: 0.05em;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+    .result-msg.show { opacity: 1; transform: translateY(0); }
+    .result-msg.win  { color: var(--yellow); }
+    .result-msg.lose { color: #ff5555; }
+    .result-msg.draw { color: var(--mid); }
+
+    .battle-vs { font-size: 1.2rem; font-weight: 700; color: var(--mid); }
+
+    /* 리셋 버튼 */
+    .reset-btn {
+      margin-top: 2rem;
+      padding: 0.65rem 1.8rem;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.3); border-radius: 30px;
+      color: rgba(255,255,255,0.7);
+      font-family: inherit; font-size: 0.8rem; font-weight: 500;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .reset-btn:hover { border-color: var(--white); color: var(--white); background: rgba(0,0,0,0.5); }
+
+    /* ── 세트 결과 전체화면 배너 ── */
+    .set-banner {
+      position: fixed; inset: 0;
+      background: rgba(5,18,32,0.82);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.35s;
+    }
+    .set-banner.show { opacity: 1; pointer-events: auto; }
+
+    .set-banner-box {
+      text-align: center;
+      animation: banner-pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;
+    }
+    @keyframes banner-pop {
+      0%   { transform: scale(0.7); opacity: 0; }
+      60%  { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .set-banner-label {
+      font-size: 0.85rem; font-weight: 700;
+      letter-spacing: 0.25em; color: var(--mid);
+      margin-bottom: 0.6rem;
+    }
+    .set-banner-result {
+      font-size: 3.2rem; font-weight: 900; line-height: 1.1;
+    }
+    .set-banner-result.win  { color: var(--yellow); }
+    .set-banner-result.lose { color: #FF5555; }
+    .set-banner-result.draw { color: var(--mid); }
+    .set-banner-score {
+      margin-top: 0.8rem;
+      font-size: 1rem; color: rgba(255,255,255,0.5);
+    }
+    .set-banner-next {
+      margin-top: 1.2rem;
+      font-size: 0.78rem; color: rgba(255,255,255,0.3);
+      animation: blink 1s ease infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 0.3; }
+      50%      { opacity: 0.9; }
+    }
+
+    /* ── 카운트다운 오버레이 ── */
+    .countdown-overlay {
+      position: fixed; inset: 0;
+      background: rgba(5,18,32,0.78);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 300;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .countdown-overlay.show { opacity: 1; }
+
+    .countdown-num {
+      font-size: 10rem; font-weight: 900;
+      color: var(--yellow);
+      text-shadow: 0 0 60px rgba(255,205,0,0.55);
+      opacity: 0;
+      line-height: 1;
+    }
+    .countdown-num.pop {
+      animation: count-pop 0.88s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+    }
+    .countdown-num.go {
+      font-size: 5.5rem; color: var(--white);
+      text-shadow: 0 0 40px rgba(255,255,255,0.4);
+      animation: go-pop 0.88s ease forwards;
+    }
+    @keyframes count-pop {
+      0%   { transform: scale(2.2); opacity: 0; }
+      22%  { transform: scale(1);   opacity: 1; }
+      72%  { transform: scale(1);   opacity: 1; }
+      100% { transform: scale(0.5); opacity: 0; }
+    }
+    @keyframes go-pop {
+      0%   { transform: scale(0.4); opacity: 0; }
+      30%  { transform: scale(1.1); opacity: 1; }
+      65%  { transform: scale(1);   opacity: 1; }
+      100% { transform: scale(1.15); opacity: 0; }
+    }
+
+    /* 선택 흔들기 */
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    .shake { animation: shake 0.25s ease; }
+  </style>
+</head>
+<body>
+
+  <p class="game-title">D·Ground</p>
+  <h1>가위바위보</h1>
+
+  <!-- 세트 점수판 -->
+  <div class="scoreboard">
+    <div class="score-box">
+      <div class="score-label">나</div>
+      <div class="score-sublabel">세트 점수</div>
+      <div class="score-number" id="my-score">0</div>
+    </div>
+    <div class="score-vs">VS</div>
+    <div class="score-box">
+      <div class="score-label">컴퓨터</div>
+      <div class="score-sublabel">세트 점수</div>
+      <div class="score-number" id="cpu-score">0</div>
+    </div>
+  </div>
+
+  <!-- SET / 라운드 표시 -->
+  <div class="set-bar">
+    <span>SET <span id="set-num" class="highlight">1</span></span>
+    <span class="divider">|</span>
+    <span>라운드 <span id="round-num">1</span> / 3</span>
+  </div>
+
+  <!-- 선택지 -->
+  <div class="choices" id="choices">
+    <button class="choice-btn" data-choice="scissors" tabindex="-1">
+      <span class="key-hint">1</span>
+      <div class="sprite-wrap"><img src="../game/image/가위바위보.jpg" class="sprite-img sprite-img--scissors" alt="가위"></div>
+    </button>
+    <button class="choice-btn" data-choice="rock" tabindex="-1">
+      <span class="key-hint">2</span>
+      <div class="sprite-wrap"><img src="../game/image/가위바위보.jpg" class="sprite-img sprite-img--rock" alt="바위"></div>
+    </button>
+    <button class="choice-btn" data-choice="paper" tabindex="-1">
+      <span class="key-hint">3</span>
+      <div class="sprite-wrap"><img src="../game/image/가위바위보.jpg" class="sprite-img sprite-img--paper" alt="보"></div>
+    </button>
+  </div>
+
+  <p class="enter-hint">
+    <kbd>1</kbd> 가위 &nbsp; <kbd>2</kbd> 바위 &nbsp; <kbd>3</kbd> 보 &nbsp;를 누른 뒤
+    <kbd>Enter ↵</kbd> 로 확인
+  </p>
+
+  <!-- 캐릭터 카드 -->
+  <div class="result-area">
+    <div class="battle">
+
+      <!-- 나 -->
+      <div class="player-col">
+        <div class="char-card" id="my-card">
+          <img src="../game/image/블루아카이브_캐릭터.jpg" class="char-img char-img--human" alt="한국인 캐릭터">
+          <div class="pick-badge" id="my-badge"></div>
+          <div class="card-overlay" id="my-overlay"></div>
+        </div>
+        <div class="player-label">나</div>
+        <div class="round-dots" id="my-dots">
+          <div class="round-dot"></div>
+          <div class="round-dot"></div>
+          <div class="round-dot"></div>
+        </div>
+      </div>
+
+      <span class="battle-vs">vs</span>
+
+      <!-- 컴퓨터 -->
+      <div class="player-col">
+        <div class="char-card" id="cpu-card">
+          <img src="../game/image/귀여운AI캐릭터.jpg" class="char-img char-img--ai" alt="AI 캐릭터">
+          <div class="pick-badge" id="cpu-badge"></div>
+          <div class="card-overlay" id="cpu-overlay"></div>
+        </div>
+        <div class="player-label">컴퓨터</div>
+        <div class="round-dots" id="cpu-dots">
+          <div class="round-dot"></div>
+          <div class="round-dot"></div>
+          <div class="round-dot"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="result-msg" id="result-msg"></div>
+  </div>
+
+  <button class="reset-btn" id="reset-btn">전체 초기화</button>
+
+  <!-- 카운트다운 오버레이 -->
+  <div class="countdown-overlay" id="countdown-overlay">
+    <div class="countdown-num" id="countdown-num"></div>
+  </div>
+
+  <!-- 세트 종료 배너 -->
+  <div class="set-banner" id="set-banner">
+    <div class="set-banner-box">
+      <div class="set-banner-label" id="banner-label">SET 1 결과</div>
+      <div class="set-banner-result" id="banner-result"></div>
+      <div class="set-banner-score" id="banner-score"></div>
+      <div class="set-banner-next">잠시 후 다음 세트가 시작됩니다...</div>
+    </div>
+  </div>
+
+<script>
+  const ROUNDS = 3;
+  const options = ['scissors', 'rock', 'paper'];
+  const beats   = { scissors: 'paper', rock: 'scissors', paper: 'rock' };
+  const txMap   = { scissors: 0, rock: -40, paper: -80 };
+
+  let mySetScore = 0, cpuSetScore = 0;
+  let myRoundWins = 0, cpuRoundWins = 0;
+  let currentRound = 1, currentSet = 1;
+  let roundResults = [];   // 'win' | 'lose' | 'draw' per round
+  let locked = false;
+  let selected = null;
+
+  const btns        = document.querySelectorAll('.choice-btn');
+  const myScoreEl   = document.getElementById('my-score');
+  const cpuScoreEl  = document.getElementById('cpu-score');
+  const myCard      = document.getElementById('my-card');
+  const cpuCard     = document.getElementById('cpu-card');
+  const myOverlay   = document.getElementById('my-overlay');
+  const cpuOverlay  = document.getElementById('cpu-overlay');
+  const myBadge     = document.getElementById('my-badge');
+  const cpuBadge    = document.getElementById('cpu-badge');
+  const resultEl    = document.getElementById('result-msg');
+  const resetBtn    = document.getElementById('reset-btn');
+  const setNumEl    = document.getElementById('set-num');
+  const roundNumEl  = document.getElementById('round-num');
+  const myDotsEl    = document.getElementById('my-dots');
+  const cpuDotsEl   = document.getElementById('cpu-dots');
+  const setBanner      = document.getElementById('set-banner');
+  const bannerLabel    = document.getElementById('banner-label');
+  const bannerResult   = document.getElementById('banner-result');
+  const bannerScore    = document.getElementById('banner-score');
+  const cdOverlay      = document.getElementById('countdown-overlay');
+  const cdNum          = document.getElementById('countdown-num');
+
+  /* ── UI 업데이트 ── */
+  function updateSetBar() {
+    setNumEl.textContent  = currentSet;
+    roundNumEl.textContent = currentRound;
+  }
+
+  function updateDots() {
+    [myDotsEl, cpuDotsEl].forEach((el, side) => {
+      el.querySelectorAll('.round-dot').forEach((dot, i) => {
+        dot.className = 'round-dot';
+        if (i < roundResults.length) {
+          const r = roundResults[i];
+          if (r === 'draw') dot.classList.add('draw');
+          else if ((r === 'win' && side === 0) || (r === 'lose' && side === 1)) dot.classList.add('win');
+          else dot.classList.add('lose');
+        }
+      });
+    });
+  }
+
+  /* ── 배지 ── */
+  function showBadge(el, choice) {
+    el.innerHTML = `<img src="../game/image/가위바위보.jpg" class="pick-badge-img" style="transform:translateX(${txMap[choice]}px)" alt="">`;
+    el.classList.add('show');
+  }
+  function hideBadge(el) { el.innerHTML = ''; el.classList.remove('show'); }
+
+  /* ── 카드 오버레이 ── */
+  function showWin(overlay, card) {
+    card.classList.add('win-state');
+    overlay.innerHTML = '<div class="trophy-anim">🏆</div>';
+    overlay.classList.add('win-overlay');
+  }
+  function showLose(overlay, card) {
+    card.classList.add('lose-state', 'shake-card');
+    card.addEventListener('animationend', () => card.classList.remove('shake-card'), { once: true });
+    overlay.innerHTML = `
+      <div class="exp-ring exp-ring1"></div>
+      <div class="exp-ring exp-ring2"></div>
+      <div class="exp-ring exp-ring3"></div>
+      <div class="exp-emoji">💥</div>
+      <div class="bang-text">꽝!</div>`;
+    overlay.classList.add('lose-overlay');
+  }
+  function showDraw(overlay) {
+    overlay.innerHTML = '<div class="draw-emoji">🤝</div>';
+    overlay.classList.add('draw-overlay');
+  }
+  function clearEffects() {
+    [myOverlay, cpuOverlay].forEach(o => { o.className = 'card-overlay'; o.innerHTML = ''; });
+    myCard.classList.remove('win-state', 'lose-state');
+    cpuCard.classList.remove('win-state', 'lose-state');
+    hideBadge(myBadge); hideBadge(cpuBadge);
+  }
+
+  /* ── 세트 종료 ── */
+  function endSet() {
+    locked = true;
+    btns.forEach(b => b.classList.add('locked-ui'));
+
+    let cls, text;
+    if (myRoundWins > cpuRoundWins)       { mySetScore++;  cls = 'win';  text = '세트 승리! 🏆'; bump(myScoreEl); }
+    else if (cpuRoundWins > myRoundWins)  { cpuSetScore++; cls = 'lose'; text = '세트 패배...';   bump(cpuScoreEl); }
+    else                                  {                cls = 'draw'; text = '세트 무승부'; }
+
+    myScoreEl.textContent  = mySetScore;
+    cpuScoreEl.textContent = cpuSetScore;
+
+    bannerLabel.textContent  = `SET ${currentSet} 결과`;
+    bannerResult.textContent = text;
+    bannerResult.className   = `set-banner-result ${cls}`;
+    bannerScore.textContent  = `${myRoundWins}승 · ${cpuRoundWins}패 · ${ROUNDS - myRoundWins - cpuRoundWins}무`;
+    setBanner.classList.add('show');
+
+    setTimeout(() => {
+      setBanner.classList.remove('show');
+      /* 세트 상태 미리 초기화 (카운트다운 중에도 도트/바가 리셋된 상태로 보임) */
+      currentSet++;
+      currentRound = 1;
+      myRoundWins = cpuRoundWins = 0;
+      roundResults = [];
+      clearEffects();
+      resultEl.className = 'result-msg';
+      resultEl.textContent = '';
+      updateSetBar();
+      updateDots();
+      /* 배너 페이드 후 카운트다운 시작 */
+      setTimeout(startCountdown, 350);
+    }, 2800);
+  }
+
+  function startCountdown() {
+    const steps = ['3', '2', '1', '시작!'];
+    let i = 0;
+    cdOverlay.classList.add('show');
+
+    function next() {
+      if (i >= steps.length) {
+        cdOverlay.classList.remove('show');
+        locked = false;
+        btns.forEach(b => b.classList.remove('locked-ui'));
+        return;
+      }
+      cdNum.className = 'countdown-num';  /* 클래스 초기화로 애니메이션 재실행 */
+      void cdNum.offsetWidth;
+      cdNum.textContent = steps[i];
+      cdNum.classList.add(i < 3 ? 'pop' : 'go');
+      i++;
+      setTimeout(next, 900);
+    }
+    next();
+  }
+
+  function startNewSet() {
+    /* fullReset에서만 직접 호출 (카운트다운 없이 즉시 초기화) */
+    currentSet++;
+    currentRound = 1;
+    myRoundWins = cpuRoundWins = 0;
+    roundResults = [];
+    locked = false;
+    btns.forEach(b => b.classList.remove('locked-ui'));
+    clearEffects();
+    resultEl.className = 'result-msg';
+    resultEl.textContent = '';
+    updateSetBar();
+    updateDots();
+  }
+
+  /* ── 선택 ── */
+  function selectChoice(choice) {
+    if (locked) return;
+    selected = choice;
+    btns.forEach(b => b.classList.toggle('selected', b.dataset.choice === choice));
+  }
+
+  /* ── 라운드 실행 ── */
+  function play() {
+    if (locked || !selected) {
+      if (!selected) {
+        const c = document.getElementById('choices');
+        c.classList.add('shake');
+        setTimeout(() => c.classList.remove('shake'), 300);
+      }
+      return;
+    }
+
+    clearEffects();
+
+    const cpu = options[Math.floor(Math.random() * 3)];
+    showBadge(myBadge, selected);
+    showBadge(cpuBadge, cpu);
+
+    resultEl.className = 'result-msg';
+
+    let roundResult, msg, cls;
+    if (selected === cpu) {
+      roundResult = 'draw';
+      showDraw(myOverlay); showDraw(cpuOverlay);
+      msg = '무승부!'; cls = 'draw';
+    } else if (beats[selected] === cpu) {
+      roundResult = 'win';
+      myRoundWins++;
+      showWin(myOverlay, myCard);
+      showLose(cpuOverlay, cpuCard);
+      msg = `라운드 ${currentRound} 승리! 🎉`; cls = 'win';
+    } else {
+      roundResult = 'lose';
+      cpuRoundWins++;
+      showLose(myOverlay, myCard);
+      showWin(cpuOverlay, cpuCard);
+      msg = `라운드 ${currentRound} 패배...`; cls = 'lose';
+    }
+
+    roundResults.push(roundResult);
+    updateDots();
+
+    requestAnimationFrame(() => {
+      resultEl.textContent = msg;
+      resultEl.classList.add('show', cls);
+    });
+
+    currentRound++;
+    updateSetBar();
+
+    selected = null;
+    btns.forEach(b => b.classList.remove('selected'));
+
+    if (currentRound > ROUNDS) {
+      setTimeout(endSet, 1000);
+    }
+  }
+
+  function bump(el) {
+    el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
+    el.addEventListener('transitionend', () => el.classList.remove('bump'), { once: true });
+  }
+
+  /* ── 전체 초기화 ── */
+  function fullReset() {
+    mySetScore = cpuSetScore = 0;
+    myScoreEl.textContent  = 0;
+    cpuScoreEl.textContent = 0;
+    currentSet = 1;
+    setBanner.classList.remove('show');
+    startNewSet();
+  }
+
+  /* ── 이벤트 ── */
+  document.addEventListener('keydown', e => {
+    if      (e.key === '1')     selectChoice('scissors');
+    else if (e.key === '2')     selectChoice('rock');
+    else if (e.key === '3')     selectChoice('paper');
+    else if (e.key === 'Enter') play();
+  });
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectChoice(btn.dataset.choice);
+      play();
+    });
+  });
+
+  resetBtn.addEventListener('click', fullReset);
+
+  /* 초기 UI */
+  updateSetBar();
+</script>
+</body>
+</html>
