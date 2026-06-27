@@ -20,7 +20,7 @@
 
     body {
       font-family: 'Noto Sans KR', sans-serif;
-      background: url('../game/image/bg.png') center / cover no-repeat fixed;
+      background: url('image/bg.png') center / cover no-repeat fixed;
       color: var(--white);
       min-height: 100vh;
       display: flex;
@@ -401,15 +401,15 @@
   <div class="choices" id="choices">
     <button class="choice-btn" data-choice="scissors" tabindex="-1">
       <span class="key-hint">1</span>
-      <div class="sprite-wrap"><img src="../game/image/가위바위보.jpg" class="sprite-img sprite-img--scissors" alt="가위"></div>
+      <div class="sprite-wrap"><img src="image/가위바위보.jpg" class="sprite-img sprite-img--scissors" alt="가위"></div>
     </button>
     <button class="choice-btn" data-choice="rock" tabindex="-1">
       <span class="key-hint">2</span>
-      <div class="sprite-wrap"><img src="../game/image/가위바위보.jpg" class="sprite-img sprite-img--rock" alt="바위"></div>
+      <div class="sprite-wrap"><img src="image/가위바위보.jpg" class="sprite-img sprite-img--rock" alt="바위"></div>
     </button>
     <button class="choice-btn" data-choice="paper" tabindex="-1">
       <span class="key-hint">3</span>
-      <div class="sprite-wrap"><img src="../game/image/가위바위보.jpg" class="sprite-img sprite-img--paper" alt="보"></div>
+      <div class="sprite-wrap"><img src="image/가위바위보.jpg" class="sprite-img sprite-img--paper" alt="보"></div>
     </button>
   </div>
 
@@ -425,7 +425,7 @@
       <!-- 나 -->
       <div class="player-col">
         <div class="char-card" id="my-card">
-          <img src="../game/image/블루아카이브_캐릭터.jpg" class="char-img char-img--human" alt="한국인 캐릭터">
+          <img src="image/블루아카이브_캐릭터.jpg" class="char-img char-img--human" alt="한국인 캐릭터">
           <div class="pick-badge" id="my-badge"></div>
           <div class="card-overlay" id="my-overlay"></div>
         </div>
@@ -442,7 +442,7 @@
       <!-- 컴퓨터 -->
       <div class="player-col">
         <div class="char-card" id="cpu-card">
-          <img src="../game/image/귀여운AI캐릭터.jpg" class="char-img char-img--ai" alt="AI 캐릭터">
+          <img src="image/귀여운AI캐릭터.jpg" class="char-img char-img--ai" alt="AI 캐릭터">
           <div class="pick-badge" id="cpu-badge"></div>
           <div class="card-overlay" id="cpu-overlay"></div>
         </div>
@@ -532,7 +532,7 @@
 
   /* ── 배지 ── */
   function showBadge(el, choice) {
-    el.innerHTML = `<img src="../game/image/가위바위보.jpg" class="pick-badge-img" style="transform:translateX(${txMap[choice]}px)" alt="">`;
+    el.innerHTML = `<img src="image/가위바위보.jpg" class="pick-badge-img" style="transform:translateX(${txMap[choice]}px)" alt="">`;
     el.classList.add('show');
   }
   function hideBadge(el) { el.innerHTML = ''; el.classList.remove('show'); }
